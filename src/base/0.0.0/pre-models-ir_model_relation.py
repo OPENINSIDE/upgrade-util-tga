@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from odoo import api, models
+import logging
 
 from odoo.addons.base.maintenance.migrations import util
+
+logger = logging.getLogger(__name__)
 
 try:
     from odoo.addons.base.models import ir_model as _ignore
@@ -46,4 +49,4 @@ class ModelRelation(models.Model):
             self.env.cr.execute(query, [tuple(gone_m2m)])
             back_m2m = "\n".join(" - %s via %s" % (tn, gone_m2m[tn]) for (tn,) in self.env.cr.fetchall())
             if back_m2m:
-                raise util.MigrationError("The following m2m relations have respawn:\n%s" % back_m2m)
+                logger.warning("The following m2m relations have respawn:\n%s", back_m2m)
